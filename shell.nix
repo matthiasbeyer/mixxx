@@ -139,14 +139,18 @@ in stdenv.mkDerivation rec {
   buildInputs = [
     chromaprint fftw flac libid3tag libmad libopus libshout libsndfile
     libusb1 libvorbis libebur128 pkgconfig portaudio portmidi protobuf qt5.full
-    rubberband sqlite taglib soundtouch vamp.vampSDK opusfile upower hidapi
+    rubberband taglib soundtouch vamp.vampSDK opusfile upower hidapi
     git glib x11 libGLU lilv lame lv2 makeWrapper qt5.qtbase
     ffmpeg
     libdjinterop
     libmodplug
     mp4v2
     wavpack
-  ] ++ allLv2Plugins;
+  ] ++ allLv2Plugins
+  ++ (let
+    strl = builtins.stringLength "sqlite";
+    filterFun = p: (builtins.substring 0 strl p.name) == "sqlite";
+  in builtins.filter filterFun qt5.qtbase.propagatedBuildInputs);
 
   meta = with nixroot.stdenv.lib; {
     homepage = https://mixxx.org;
